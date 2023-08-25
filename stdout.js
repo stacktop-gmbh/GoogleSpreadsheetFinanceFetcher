@@ -37,12 +37,25 @@ class SpreadsheetFetcher {
     }
 
     _reformatData(data) {
-        return data.reduce((acc, item) => {
+        const supportedCurrencies = [];
+
+        const reformattedData = data.reduce((acc, item) => {
             const key = item[''];
             delete item[''];
+
+            // Pushing keys of item to supportedCurrencies array.
+            for (let currency in item) {
+                if (!supportedCurrencies.includes(currency)) {
+                    supportedCurrencies.push(currency);
+                }
+            }
+
             acc[key] = item;
             return acc;
         }, {});
+
+        reformattedData.SUPPORTED = supportedCurrencies;
+        return reformattedData;
     }
 }
 
