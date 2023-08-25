@@ -99,50 +99,6 @@ Instead of manually entering your data, you can use Google Finance formulas to a
 | PEN | `= GOOGLEFINANCE("EUR-PEN")`  | `= GOOGLEFINANCE("USD-PEN")`  | 1                             | `= GOOGLEFINANCE("GBP-PEN")`  | `= GOOGLEFINANCE("CLP-PEN")`  |
 | GBP | `= GOOGLEFINANCE("EUR-GBP")`  | `= GOOGLEFINANCE("USD-GBP")`  | `= GOOGLEFINANCE("PEN-GBP")`  | 1                             | `= GOOGLEFINANCE("CLP-GBP")`  |
 | CLP | `= GOOGLEFINANCE("EUR-CLP")`  | `= GOOGLEFINANCE("USD-CLP")`  | `= GOOGLEFINANCE("PEN-CLP")`  | `= GOOGLEFINANCE("GBP-CLP")`  | 1                             |
-const axios = require('axios');
-const csv = require('csv-parser');
-const { Readable } = require('stream');
-
-async function fetchSpreadsheetData() {
-    const SPREADSHEET_URL = process.env.SPREADSHEET_URL;
-
-    if (!SPREADSHEET_URL) {
-        console.error("Error: SPREADSHEET_URL environment variable not set.");
-        return;
-    }
-
-    try {
-        const response = await axios.get(SPREADSHEET_URL);
-        const csvData = response.data;
-
-        const results = [];
-        const stream = Readable.from(csvData);
-        
-        stream.pipe(csv())
-            .on('data', (row) => results.push(row))
-            .on('end', () => {
-                const reformattedData = reformatData(results);
-                console.log(reformattedData);
-            });
-
-    } catch (error) {
-        console.error("Error fetching spreadsheet data:", error);
-    }
-}
-
-function reformatData(data) {
-    const reformattedData = {};
-
-    data.forEach(item => {
-        const key = item[''];
-        delete item['']; // Remove the empty key
-        reformattedData[key] = item;
-    });
-
-    return reformattedData;
-}
-
-fetchSpreadsheetData();
 
 ## How to Run
 
